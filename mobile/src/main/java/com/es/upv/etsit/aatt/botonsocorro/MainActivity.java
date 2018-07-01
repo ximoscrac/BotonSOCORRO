@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
 // FUNCION ESPERA =========================================================================================================================================================
         //aqui irá el hilo en segundo plano que tendra que estar esperando la posible pulsación del reloj
 
-        apiClient = new GoogleApiClient.Builder(this)
+  /*      apiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(this)
                 .build();
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         tarea.execute();
 
 
-
+*/
 
 
 // CONFIGURACIÓN DE LOS BOTONES ===========================================================================================================================================
