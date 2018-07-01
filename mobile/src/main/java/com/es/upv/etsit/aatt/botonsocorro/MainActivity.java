@@ -42,6 +42,36 @@ import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.MessageEvent;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
+import com.google.android.gms.wearable.Wearable;
+import com.google.android.gms.wearable.WearableListenerService;
+
+
+import android.os.Bundle;
+import android.support.design.widget.*;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.os.AsyncTask;
+
+
 
 public class MainActivity extends AppCompatActivity {
     String nombre;
@@ -50,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
     boolean preferenciasGuardadas;
     String latitud = "nose";
     String longitud = "nose";
+    private GoogleApiClient apiClient;
 
 
     @Override
@@ -63,32 +94,40 @@ public class MainActivity extends AppCompatActivity {
             locationStart();
         }
 
-
 // FUNCION ESPERA =========================================================================================================================================================
         //aqui irá el hilo en segundo plano que tendra que estar esperando la posible pulsación del reloj
 
-/*private void mandarMensaje(final String path, final String texto){
-    new Thread(new Runnable() {
-        @Override
-        public void run() {
-            NodeApi.GetConnectedNodesResult nodos =
-                    Wearable.NodeApi.getConnectedNodes(apiClient).await()
-                    for (Node nodo : nodos.getNodes()) {
-                Wearable.MessageApi.sendMessage(apiClient, nodo.getNodo(),path, texto.getBytes())
-                        .setResultCallback(
-                                new ResultCallback<MessageApi.SendMessageResult>() {
-                                    @Override
-                                    public void onResult(@NonNull MessageApi.SendMessageResult sendMessageResult) resultado {
-                                        if (!resultado.getStatus().isSuccess()) {
-                                            Log.e("sincronización","Error al mandar mensaje. Godigo:"+resultado.getStatus().getStatusCode();)
-                                        }
-                                    }
-                                }
-                        );
-                    }
+        apiClient = new GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .addConnectionCallbacks(this)
+                .build();
+
+        apiClient.connect();
+
+        //esto es la funcion escucha
+        class escuchando extends AsyncTask<Void, Integer, Boolean> {
+
+            @Override
+            protected Boolean doInBackground(Void... params) {
+
+                if (messageEvent.getPath().equalsIgnoreCase(WEAR_ARRANCAR_ACTIVIDAD)) {
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            |Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    sos();
+
+
+                }
+                return true;
+            }
         }
-    })
-*/
+        //la lanzamos
+        tarea = new escuchando();
+        tarea.execute();
+
+
+
+
 
 // CONFIGURACIÓN DE LOS BOTONES ===========================================================================================================================================
 // CONFIGURAMOS EL BOTON DE CONFIGURACIÓN
